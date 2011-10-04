@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS Demo</title>
+    <style>
+        table { background: yellow;
+                border: 2px solid black;
+            }
+        #first { background: red; }
+        
+        table div{color:green;}
+        
+        div[contenteditable]{ color:blue; }
+        tr:first-child{background:blue;}
+    </style>
+</head>
+<body>
+    <div contenteditable>Hello</div>
+    <table>
+        <tr>
+            <td id="first">1</td>
+            <td><div>2</div></td>
+        </tr>
+        <tr>
+            <td id="first">1</td>
+            <td><div>2</div></td>
+        </tr>
+        <tr>
+            <td id="first">1</td>
+            <td><div>2</div></td>
+        </tr>
+        <tr>
+            <td id="first">1</td>
+            <td><div>2</div></td>
+        </tr>
+    </table>
+</body>
+</html>
