@@ -1,4 +1,4 @@
-halma = {}
+halma = {};
 
 halma.boardWidth = 9;
 halma.boardHeight = 9;
@@ -17,8 +17,8 @@ halma.initGame = function () {
         this.moveTo = function (other) {
             this.row = other.row;
             this.col = other.col;
-        }
-    }
+        };
+    };
 
     var initPieces = function () {
         var pieces = [
@@ -43,7 +43,7 @@ halma.initGame = function () {
 //                    new Piece(0, 8)
         ];
         return pieces;
-    }
+    };
 
     var drawPiece = function (context, piece, selected) {
         var x, y, radius;
@@ -65,7 +65,7 @@ halma.initGame = function () {
             context.fillStyle = '#b33';
             context.fill();
         }
-    }
+    };
 
     var drawBoard = function (context) {
         var i;
@@ -100,7 +100,7 @@ halma.initGame = function () {
             context.textBaseline = "middle";
             context.fillText("The End", halma.pieceWidth * halma.boardWidth / 2, halma.pieceHeight * halma.boardHeight / 2);
         }
-    }
+    };
 
     var checkTheEnd = function () {
         var i;
@@ -112,7 +112,7 @@ halma.initGame = function () {
         }
         halma.theEnd = true;
         return;
-    }
+    };
 
     var getCursorPosition = function (event) {
         var x, y;
@@ -133,7 +133,7 @@ halma.initGame = function () {
         y = Math.min(y, halma.boardHeight * halma.pieceHeight);
 
         return new Piece(Math.floor(y / halma.pieceHeight), Math.floor(x / halma.pieceWidth));
-    }
+    };
 
     var selectPiece = function (i) {
         if (i == halma.selectedPiece) {
@@ -144,15 +144,15 @@ halma.initGame = function () {
             halma.seriesJump = false;
         }
         drawBoard(halma.context);
-    }
+    };
 
     var singleMove = function (dx, dy) {
         return (dx <= 1) && (dy <= 1);
-    }
+    };
 
     var jumpMove = function (dx, dy) {
         return (dx == 2 && dy == 0) || (dx == 0 && dy == 2) || (dx == 2 && dy == 2);
-    }
+    };
 
     var pieceInMiddle = function (p1, p2) {
         var row = (p1.row + p2.row) / 2;
@@ -165,7 +165,7 @@ halma.initGame = function () {
                 return true;
         }
         return false;
-    }
+    };
 
     var movePiece = function (emptyCell) {
         var piece, dx, dy;
@@ -196,7 +196,7 @@ halma.initGame = function () {
             drawBoard(halma.context);
             halma.seriesJump = true;
         }
-    }
+    };
 
     var boardClick = function (event) {
         if (halma.theEnd) return;
@@ -212,8 +212,33 @@ halma.initGame = function () {
             }
         }
         movePiece(clickedCell);
-    }
+        //saveGame();
+    };
 
+    var saveGame = function(){
+        var state;
+        if (window.localStorage){
+            state = JSON.stringify(halma.pieces);
+            localStorage['halma.pieces'] = state;
+            localStorage['halma.numberOfMoves'] = halma.numberOfMoves;
+        }
+    };
+    
+    var resumeGame = function(){
+        var i;
+        if (window.localStorage && localStorage['halma.pieces']){
+            halma.pieces = JSON.parse (localStorage['halma.pieces']);
+            
+            for (i=0; i < halma.pieces.length; i++){
+                //call constructor as the serialization doesn't store the moveTo method!!!
+                halma.pieces[i] = new Piece(halma.pieces[i].row, halma.pieces[i].col);
+            }
+            halma.numberOfMoves=parseInt(localStorage['halma.numberOfMoves']);
+        }
+        return false;
+    };
+    
+    
     canvasElement = document.createElement('canvas');
     document.body.appendChild(canvasElement);
 
@@ -224,13 +249,15 @@ halma.initGame = function () {
 
     canvasElement.addEventListener('click', boardClick, false);
 
-    halma.pieces = initPieces();
+//    if (!resumeGame()){
+        halma.pieces = initPieces();
+//    }
+    
     halma.selectedPiece = -1;
 
     halma.divCounter = document.getElementById("counter");
 
     drawBoard(halma.context);
-}
+};
 
 window.addEventListener('load', halma.initGame, false);
-
